@@ -50,5 +50,5 @@ Follow the `installation/README.md` file for further instructions on installing 
 
 # Example of usage
 ### [Cleansea Project](https://youtu.be/nQbFYz0dRno) - Underwater Debris Detection as Bachelor's Final Project by [Alejandro Sanchez Ferrer](https://github.com/asanc199)
+![Projecto Cleansea](assets/Detection.gif)
 ![Projecto Cleansea](assets/project_cleansea.gif)
-
