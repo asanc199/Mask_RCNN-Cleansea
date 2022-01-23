@@ -1,6 +1,6 @@
 # Mask R-CNN for Object Detection and Segmentation
 
-This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
+This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow (Check Installation folder for further instructions). The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
 
 ![Instance Segmentation Sample](assets/street.png)
 
@@ -110,7 +110,7 @@ The training schedule, learning rate, and other parameters should be set in `sam
 
 Start by reading this [blog post about the balloon color splash sample](https://engineering.matterport.com/splash-of-color-instance-segmentation-with-mask-r-cnn-and-tensorflow-7c761e238b46). It covers the process starting from annotating images to training to using the results in a sample application.
 
-In summary, to train the model on your own dataset you'll need to extend two classes:
+In summary, to train the model on your own dataset you can follow the train.py script provided, which includes the following classes:
 
 ```Config```
 This class contains the default configuration. Subclass it and modify the attributes you need to change.
@@ -122,12 +122,12 @@ the code of the model. It also supports loading multiple datasets at the
 same time, which is useful if the objects you want to detect are not 
 all available in one dataset. 
 
-See examples in `samples/shapes/train_shapes.ipynb`, `samples/coco/coco.py`, `samples/balloon/balloon.py`, and `samples/nucleus/nucleus.py`.
+See examples in `samples/shapes/train_shapes.ipynb`, `samples/coco/coco.py`, `samples/balloon/balloon.py`, `samples/nucleus/nucleus.py` and `train.py` from the Cleansea project for better understanding .
 
 ## Differences from the Official Paper
 This implementation follows the Mask RCNN paper for the most part, but there are a few cases where we deviated in favor of code simplicity and generalization. These are some of the differences we're aware of. If you encounter other differences, please do let us know.
 
-* **Image Resizing:** To support training multiple images per batch we resize all images to the same size. For example, 1024x1024px on MS COCO. We preserve the aspect ratio, so if an image is not square we pad it with zeros. In the paper the resizing is done such that the smallest side is 800px and the largest is trimmed at 1000px.
+* **Image Resizing:** To support training multiple images per batch we resize all images to the same size. For example, 512 x512px on MS COCO. We preserve the aspect ratio, so if an image is not square we pad it with zeros. In the paper the resizing is done such that the smallest side is 800px and the largest is trimmed at 1000px.
 * **Bounding Boxes**: Some datasets provide bounding boxes and some provide masks only. To support training on multiple datasets we opted to ignore the bounding boxes that come with the dataset and generate them on the fly instead. We pick the smallest box that encapsulates all the pixels of the mask as the bounding box. This simplifies the implementation and also makes it easy to apply image augmentations that would otherwise be harder to apply to bounding boxes, such as image rotation.
 
     To validate this approach, we compared our computed bounding boxes to those provided by the COCO dataset.
@@ -164,32 +164,15 @@ Contributions to this repository are welcome. Examples of things you can contrib
 You can also [join our team](https://matterport.com/careers/) and help us build even more projects like this one.
 
 ## Requirements
-Python 3.4, TensorFlow 1.3, Keras 2.0.8 and other common packages listed in `requirements.txt`.
-
-### MS COCO Requirements:
-To train or test on MS COCO, you'll also need:
-* pycocotools (installation instructions below)
-* [MS COCO Dataset](http://cocodataset.org/#home)
-* Download the 5K [minival](https://dl.dropboxusercontent.com/s/o43o90bna78omob/instances_minival2014.json.zip?dl=0)
-  and the 35K [validation-minus-minival](https://dl.dropboxusercontent.com/s/s3tw5zcg7395368/instances_valminusminival2014.json.zip?dl=0)
-  subsets. More details in the original [Faster R-CNN implementation](https://github.com/rbgirshick/py-faster-rcnn/blob/master/data/README.md).
+Python 3.7.11, TensorFlow 2.4.1, Keras 2.4.3 and other common packages listed in `requirements.txt`.
 
 If you use Docker, the code has been verified to work on
 [this Docker container](https://hub.docker.com/r/waleedka/modern-deep-learning/).
 
-
 ## Installation
-1. Clone this repository
-2. Install dependencies
-   ```bash
-   pip3 install -r requirements.txt
-   ```
-3. Run setup from the repository root directory
-    ```bash
-    python3 setup.py install
-    ``` 
-3. Download pre-trained COCO weights (mask_rcnn_coco.h5) from the [releases page](https://github.com/matterport/Mask_RCNN/releases).
-4. (Optional) To train or test on MS COCO install `pycocotools` from one of these repos. They are forks of the original pycocotools with fixes for Python3 and Windows (the official repo doesn't seem to be active anymore).
+Follow the `installation/cleansea_installation.md` file for further instructions on installing dependencies on a conda enviroment.
+
+(Optional) To train or test on MS COCO install `pycocotools` from one of these repos. They are forks of the original pycocotools with fixes for Python3 and Windows (the official repo doesn't seem to be active anymore).
 
     * Linux: https://github.com/waleedka/coco
     * Windows: https://github.com/philferriere/cocoapi.
@@ -240,5 +223,5 @@ A computer vision class project by HU Shiyu to apply the color pop effect on peo
 ### [GRASS GIS Addon](https://github.com/ctu-geoforall-lab/i.ann.maskrcnn) to generate vector masks from geospatial imagery. Based on a [Master's thesis](https://github.com/ctu-geoforall-lab-projects/dp-pesek-2018) by Ondřej Pešek.
 ![GRASS GIS Image](assets/project_grass_gis.png)
 
-### [Underwater Debris Detection](https://www.youtube.com/watch?v=yb5QlpaYiGU) by Alejandro Sanchez.
-![Projecto Cleansea](assets/project_cleansea.png)
+### [Cleansea Project](https://youtu.be/nQbFYz0dRno) - Underwater Debris Detection as Bachelor's Final Project by [Alejandro Sanchez Ferrer](https://github.com/asanc199)
+![Projecto Cleansea](assets/project_cleansea.gif)
