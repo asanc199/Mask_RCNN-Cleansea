@@ -38,4 +38,6 @@ For CPU: tensorflow:2.4.1, keras:2.4.3, h5py:2.10.0
 🔺 **Step 6:** Running the setup.py file.
  >python setup.py install
 
-A view from the project: ![Mask RCNN Sample](Sample.png "Mask RCNN Sample")
+A view from the project: 
+
+![Mask RCNN Sample](Sample.png "Mask RCNN Sample")
