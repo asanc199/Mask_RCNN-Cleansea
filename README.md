@@ -12,8 +12,25 @@ The main purpose of this research consists:
 ## Cleansea Dataset Image examples
 Hand-labeled dataset of underwater debris is shown below:
 
-![Debris Detection Sample 1](/assets/detection_0.png)
-![Debris Detection Sample 2](/assets/detection_1.png)
+![Dataset Labeling Sample 1](/assets/dataset_0.png)
+![Dataset Labeling Sample 2](/assets/dataset_1.png)
+
+In order to download the images related with the annotation files of this dataset visit the [download link](https://www.dlsi.ua.es/~jgallego/datasets/cleansea/)
+
+## Cleansea Trained Model detection and segmentation examples
+### Ground Truth vs. Prediction
+
+![Debris Ground Truth 1](/assets/gt_1.png)
+![Debris Detection Sample 1](/assets/detection_1.png)
+
+![Debris Ground Truth 2](/assets/gt_0.png)
+![Debris Detection Sample 2](/assets/detection_0.png)
+
+![Debris Ground Truth 3](/assets/gt_5.png)
+![Debris Detection Sample 3](/assets/detection_5.png)
+
+![Debris Ground Truth 4](/assets/gt_6.png)
+![Debris Detection Sample 4](/assets/detection_6.png)
 
 ## Citation
 Use this bibtex to cite this repository:
@@ -30,7 +47,7 @@ Use this bibtex to cite this repository:
 Python 3.7.11, TensorFlow 2.4.1, Keras 2.4.3 and other common packages listed in `requirements.txt`.
 
 ## Installation
-Follow the `installation/cleansea_installation.md` file for further instructions on installing dependencies on a conda enviroment.
+Follow the `installation/README.md` file for further instructions on installing dependencies on a conda enviroment.
 
 (Optional) To train or test on MS COCO install `pycocotools` from one of these repos. They are forks of the original pycocotools with fixes for Python3 and Windows (the official repo doesn't seem to be active anymore).
 
