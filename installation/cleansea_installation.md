@@ -5,7 +5,7 @@
     
     -Anaconda Cloud: https://www.anaconda.com
 
-🔺 **Step 1:** Compatible with Python 3.6 version, a virtual environment named maskrcnn is created in conda prompt.
+🔺 **Step 1:** Compatible with Python 3.7 version, a virtual environment named maskrcnn is created in conda prompt.
 >conda create -n cleansea python=3.7.11
 
 🔺 **Step 2:** The maskrcnn virtual environment is activated.
