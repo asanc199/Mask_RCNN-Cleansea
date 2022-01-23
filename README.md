@@ -1,6 +1,6 @@
 # Cleansea Project
 ## Mask R-CNN for Underwater Debris Detection and Segmentation
-This project uses the Mask R-CNN algorithm to detect underwater debris. The goal is to train the Mask R-CNN neural network algorithm using our hand-labeled dataset of underwater debris in order to achieve a successful detection of segmentation of debris under the sea.
+This project uses the Mask R-CNN algorithm to detect underwater debris. The goal is to train the Mask R-CNN neural network algorithm using our hand-labeled dataset of underwater debris in order to achieve a successful detection of segmentation of debris under the sea. This imlementation relies on the Mask R-CNN Repository by Matterport, Inc. (see [here](https://github.com/matterport/Mask_RCNN.git)).
 
 The main purpose of this research consists:
 * **New Dataset generation:** Since most existing datasets for object detection are not applicable in this type of task, a dataset of underwater captured debris has been labeled with up to 19 different labels.
