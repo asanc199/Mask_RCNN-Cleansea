@@ -223,5 +223,5 @@ A computer vision class project by HU Shiyu to apply the color pop effect on peo
 ### [GRASS GIS Addon](https://github.com/ctu-geoforall-lab/i.ann.maskrcnn) to generate vector masks from geospatial imagery. Based on a [Master's thesis](https://github.com/ctu-geoforall-lab-projects/dp-pesek-2018) by Ondřej Pešek.
 ![GRASS GIS Image](assets/project_grass_gis.png)
 
-### [Underwater Debris Detection](https://youtu.be/nQbFYz0dRno) by Alejandro Sanchez.
+### [Cleansea Project](https://youtu.be/nQbFYz0dRno): Underwater Debris Detection as Bachelor's Final Project by Alejandro Sanchez Ferrer
 ![Projecto Cleansea](assets/project_cleansea.gif)
