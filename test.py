@@ -1,3 +1,4 @@
+from audioop import add
 import os
 import sys
 from numpy import random
@@ -24,7 +25,7 @@ from sklearn import svm, datasets
 from sklearn.model_selection import train_test_split
 
 #Cambiamos el Directorio al propio de MASK_RCNN
-ROOT_DIR = 'D:/Cleansea/Mask_RCNN-tensorflow2.0'
+ROOT_DIR = 'D:/Cleansea/Mask_RCNN-cleansea'
 #ROOT_DIR = '/home/saflex/Projecto_CleanSea/Mask_RCNN/Mask_RCNN-master'
 assert os.path.exists(ROOT_DIR), 'ROOT_DIR does not exist'
 
@@ -198,9 +199,10 @@ def confusion_matrix(y_test,y_pred):
         y_true= y_test,
         y_pred= y_pred,
         normalize='true',
-        #include_values=True,
+        include_values=True,
         cmap=plt.cm.Blues,
         xticks_rotation='vertical',
+        values_format='.2f'
     )
     disp.ax_.set_title(title)
 
@@ -208,6 +210,7 @@ def confusion_matrix(y_test,y_pred):
     print(disp.confusion_matrix)
 
     plt.show()
+
 ############################################################
 #  Evaluacion
 ############################################################
@@ -314,56 +317,60 @@ plt.show()
 #  Precision del Modelo
 ############################################################
 print("Calculating mAP...")
-"""
-image_ids = dataset_test.image_ids
-print(dataset_test.class_names)
-APs = []
-detections = []
-gt = []
-norm_detections = []
-norm_gt = []
-for image_id in image_ids:
-    # Load image and ground truth data
-    image, image_meta, gt_class_id, gt_bbox, gt_mask =\
-        modellib.load_image_gt(dataset_test, inference_config,
-                               image_id)
-    #if id_class in gt_class_id:
-
-    molded_images = np.expand_dims(modellib.mold_image(image, inference_config), 0)
-    # Run object detection
-    results = model.detect([image], verbose=0)
-    r = results[0]
-
-    # Compute AP
-    AP, precisions, recalls, overlaps =\
-        utils.compute_ap(gt_bbox, gt_class_id, gt_mask,
-                         r["rois"], r["class_ids"], r["scores"], r['masks'])
-    #if len(r["class_ids"])!= len(gt_class_id):
-        #print(r["class_ids"])
-        #print(gt_class_id)
-    for x in r["class_ids"]:
-        detections.append(x)
-    for x in gt_class_id:
-        gt.append(x)
-    APs.append(AP)
-#print(f"Ground Truth:{gt}")
-#print(f"Detections:{detections}")
-#print(f"Class Names:{dataset_test.class_names}")
-for i in gt:
-    norm_gt.append(dataset_test.class_names[i])
-#print(f"Filtered GT:{norm_gt}")
-for i in detections:
-    norm_detections.append(dataset_test.class_names[i])
-#print(f"Filtered Detection:{norm_detections}")
-    
-print("mAP: ", np.mean(APs))
-"""
 
 #ground-truth and predictions lists
 gt_tot = np.array([])
 pred_tot = np.array([])
 #mAP list
 mAP_ = []
+compare_images = []
+
+"""
+# Comparacion con estudios anteriores (Se escogen determinadas clases)
+for image_id in dataset_test.image_ids:
+    image, image_meta, gt_class_id, gt_bbox, gt_mask =\
+        modellib.load_image_gt(dataset_test, inference_config, image_id)
+    classes = gt_class_id
+    added = False
+    for object in classes:
+        if object == 1 and added==False:
+            compare_images.append(image_id)
+            added = True
+        #elif object == 3 and added==False:
+        #    compare_images.append(image_id)
+        #    added = True
+        elif object == 4 and added==False:
+            compare_images.append(image_id)
+            added = True
+        elif object == 5 and added==False:
+            compare_images.append(image_id)
+            added = True
+        elif object == 7 and added==False:
+            compare_images.append(image_id)
+            added = True
+        elif object == 9 and added==False:
+            compare_images.append(image_id)
+            added = True
+        #elif object == 11 and added==False:
+        #    compare_images.append(image_id)
+        #    added = True
+        elif object == 12 and added==False:
+            compare_images.append(image_id)
+            added = True
+        elif object == 14 and added==False:
+            compare_images.append(image_id)
+            added = True
+        #elif object == 15 and added==False:
+        #    compare_images.append(image_id)
+        #    added = True
+        elif object == 16 and added==False:
+            compare_images.append(image_id)
+            added = True
+        elif object == 17 and added==False:
+            compare_images.append(image_id)
+            added = True
+print(compare_images)
+"""
 
 #compute gt_tot, pred_tot and mAP for each image in the test dataset
 for image_id in dataset_test.image_ids:
@@ -388,15 +395,23 @@ for image_id in dataset_test.image_ids:
 
 gt_tot=gt_tot.astype(int)
 pred_tot=pred_tot.astype(int)
-print("ground truth list : ",gt_tot)
-print("predicted list : ",pred_tot)
+print(f"Test Dataset: {dataset_test.class_names}")
+#print("ground truth list: ",gt_tot)
+#print("predicted list: ",pred_tot)
+
 norm_detections = []
 norm_gt = []
 for i in gt_tot:
     norm_gt.append(dataset_test.class_names[i])
-#print(f"Filtered GT:{norm_gt}")
 for i in pred_tot:
     norm_detections.append(dataset_test.class_names[i])
+
+#print(f"Filtered GT: {norm_gt}")
+#print(f"Filtered Detections: {norm_detections}")
+#print(f"Accuracy list {mAP_}")
+
+print("mAP: ", np.mean(mAP_))
+
 #save the vectors of gt and pred
 save_dir = "output"
 gt_pred_tot_json = {"gt_tot" : gt_tot, "pred_tot" : pred_tot}
@@ -410,4 +425,4 @@ df.to_json(os.path.join(save_dir,"gt_pred_test.json"))
 ############################################################
 # Grid of ground truth objects and their predictions
 print("Confusion Matrix")
-confusion_matrix(norm_gt,norm_detections)
+confusion_matrix(norm_gt,norm_detections,)
