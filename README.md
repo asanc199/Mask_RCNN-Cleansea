@@ -12,8 +12,7 @@ The main purpose of this research consists:
 ## Cleansea Dataset Image examples
 Hand-labeled dataset of underwater debris is shown below:
 
-![Dataset Labeling Sample 1](/assets/dataset_0.png)
-![Dataset Labeling Sample 2](/assets/dataset_1.png)
+![Dataset Labeling Sample](/assets/dataset_1.png)
 
 In order to download the images related with the annotation files of this dataset visit the [download link](https://www.dlsi.ua.es/~jgallego/datasets/cleansea/)
 
