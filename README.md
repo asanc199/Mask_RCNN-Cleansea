@@ -17,8 +17,8 @@ Hand-labeled dataset of underwater debris is shown below:
 In order to download the images related with the annotation files of this dataset visit the [download link](https://www.dlsi.ua.es/~jgallego/datasets/cleansea/)
 
 ## Cleansea Trained Model detection and segmentation examples
-### Ground Truth vs. Prediction
-Ground Truth             |  Prediction
+
+**Ground Truth**             |  **Prediction**
 :-------------------------:|:-------------------------:
 ![Debris Ground Truth 1](/assets/gt_1.png)  |  ![Debris Detection Sample 1](/assets/detection_1.png)
 ![Debris Ground Truth 2](/assets/gt_0.png)  |  ![Debris Detection Sample 2](/assets/detection_0.png)
