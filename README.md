@@ -18,18 +18,12 @@ In order to download the images related with the annotation files of this datase
 
 ## Cleansea Trained Model detection and segmentation examples
 ### Ground Truth vs. Prediction
-
-![Debris Ground Truth 1](/assets/gt_1.png)
-![Debris Detection Sample 1](/assets/detection_1.png)
-
-![Debris Ground Truth 2](/assets/gt_0.png)
-![Debris Detection Sample 2](/assets/detection_0.png)
-
-![Debris Ground Truth 3](/assets/gt_5.png)
-![Debris Detection Sample 3](/assets/detection_5.png)
-
-![Debris Ground Truth 4](/assets/gt_6.png)
-![Debris Detection Sample 4](/assets/detection_6.png)
+Ground Truth             |  Prediction
+:-------------------------:|:-------------------------:
+![Debris Ground Truth 1](/assets/gt_1.png)  |  ![Debris Detection Sample 1](/assets/detection_1.png)
+![Debris Ground Truth 2](/assets/gt_0.png)  |  ![Debris Detection Sample 2](/assets/detection_0.png)
+![Debris Ground Truth 3](/assets/gt_5.png)  |  ![Debris Detection Sample 3](/assets/detection_5.png)
+![Debris Ground Truth 4](/assets/gt_6.png)  |  ![Debris Detection Sample 4](/assets/detection_6.png)
 
 ## Citation
 Use this bibtex to cite this repository:
