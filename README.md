@@ -30,7 +30,7 @@ Use this bibtex to cite this repository:
 ```
 @inproceedings{asferrer2022,
       author    = {Alejandro Sanchez Ferrer, Antonio Javier Gallego, Jose Javier Valero-Mas, and Jorge Calvo-Zaragoza},
-      title     = {Underwater Debris Detection using Regression Neural Networks},
+      title     = {The CleanSea Set: A Benchmark Corpus for Underwater Debris Detection and Recognition},
       booktitle = {Iberian Conference on Pattern Recognition and Image Analysis},
       year      = {2022}
     }
