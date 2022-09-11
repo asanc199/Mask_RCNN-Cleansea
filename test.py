@@ -37,13 +37,12 @@ import mrcnn.model as modellib
 from mrcnn import visualize
 from mrcnn.model import log
 
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+#physical_devices = tf.config.list_physical_devices('GPU')
+#tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 ############################################################
 #  Configuracion
 ############################################################
-
 class CleanSeaConfig(Config):
     """
     Configuracion para el entrenamiento con CleanSea Dataset.
@@ -67,7 +66,6 @@ class CleanSeaConfig(Config):
     # Salta las detecciones con <50% de seguridad
     DETECTION_MIN_CONFIDENCE = 0.5
     
-
 config= CleanSeaConfig()
 config.display()
 
@@ -228,7 +226,7 @@ model = modellib.MaskRCNN(mode="inference",
 
 # Get path to saved weights
 # Either set a specific path or find last trained weights
-model_path = os.path.join(MODEL_DIR, "mask_rcnn_debris_weights1000DA5Heads.h5")
+model_path = os.path.join(MODEL_DIR,"debris20220705T2024","mask_rcnn_debris_0100.h5")
 #model_path = model.find_last()
 
 # Load trained weights
@@ -283,7 +281,7 @@ img_names=np.array(img_names)
 #  Deteccion Deseada vs Obtenida
 ############################################################
 # Test on a random training image
-image_id = 138
+image_id = random.choice(dataset_test.image_ids)
 print(f"Image {image_id} to process...")
 original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
     modellib.load_image_gt(dataset_test, inference_config, 
@@ -304,6 +302,7 @@ r = results[0]
 visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'], 
                             dataset_test.class_names, r['scores'], ax=get_ax(),figsize=(8,8))
 plt.show()
+
 ############################################################
 #  Curva de Precision-Recall
 ############################################################
@@ -313,6 +312,7 @@ AP, precisions, recalls, overlaps = utils.compute_ap(gt_bbox, gt_class_id, gt_ma
                                           r['rois'], r['class_ids'], r['scores'], r['masks'])
 visualize.plot_precision_recall(AP, precisions, recalls)
 plt.show()
+
 ############################################################
 #  Precision del Modelo
 ############################################################

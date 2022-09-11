@@ -2138,7 +2138,7 @@ class MaskRCNN(object):
         """Downloads ImageNet trained weights from Keras.
         Returns path to weights file.
         """
-        from keras.utils.data_utils import get_file
+        from tensorflow.keras.utils import get_file
         TF_WEIGHTS_PATH_NO_TOP = 'https://github.com/fchollet/deep-learning-models/'\
                                  'releases/download/v0.2/'\
                                  'resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5'
@@ -2325,15 +2325,15 @@ class MaskRCNN(object):
         val_generator = DataGenerator(val_dataset, self.config, shuffle=True)
 
         # Create log_dir if it does not exist
-        if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
+        #if not os.path.exists(self.log_dir):
+        #    os.makedirs(self.log_dir)
 
         # Callbacks
         callbacks = [
-            keras.callbacks.TensorBoard(log_dir=self.log_dir,
-                                        histogram_freq=0, write_graph=True, write_images=False),
-            keras.callbacks.ModelCheckpoint(self.checkpoint_path,
-                                            verbose=0, save_weights_only=True),
+            #keras.callbacks.TensorBoard(log_dir=self.log_dir,
+            #                            histogram_freq=0, write_graph=True, write_images=False),
+            #keras.callbacks.ModelCheckpoint(self.checkpoint_path,
+            #                                verbose=0, save_weights_only=True),
         ]
 
         # Add custom callbacks to the list
@@ -2342,8 +2342,8 @@ class MaskRCNN(object):
 
         # Train
         log("\nStarting at epoch {}. LR={}\n".format(self.epoch, learning_rate))
-        log("Checkpoint Path: {}".format(self.checkpoint_path))
-        self.set_trainable(layers)
+        # log("Checkpoint Path: {}".format(self.checkpoint_path))
+        self.set_trainable(layers, verbose=0)
         self.compile(learning_rate, self.config.LEARNING_MOMENTUM)
 
         # Work-around for Windows: Keras fails on Windows when using
@@ -2356,15 +2356,16 @@ class MaskRCNN(object):
 
         self.keras_model.fit(
             train_generator,
-            initial_epoch=self.epoch,
-            epochs=epochs,
-            steps_per_epoch=self.config.STEPS_PER_EPOCH,
-            callbacks=callbacks,
-            validation_data=val_generator,
-            validation_steps=self.config.VALIDATION_STEPS,
-            max_queue_size=100,
-            workers=0,
-            use_multiprocessing=workers > 1,
+            initial_epoch = self.epoch,
+            epochs = epochs,
+            steps_per_epoch = train_generator.__len__(), #self.config.STEPS_PER_EPOCH,
+            callbacks = callbacks,
+            # validation_data = val_generator,
+            # validation_steps = val_generator.__len__(), #self.config.VALIDATION_STEPS,
+            max_queue_size = 100,
+            workers = 0,
+            use_multiprocessing = workers > 1,
+            verbose = 2,
         )
         self.epoch = max(self.epoch, epochs)
 

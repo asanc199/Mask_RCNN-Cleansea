@@ -16,9 +16,13 @@ from imgaug import augmenters as iaa
 import warnings
 warnings.filterwarnings(action='ignore')
 
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+physical_devices = tf.config.list_physical_devices('GPU')
+print(f"GPUS: {physical_devices}")
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
 #Cambiamos el Directorio al propio de MASK_RCNN
 ROOT_DIR = 'D:/Cleansea/Mask_RCNN-cleansea'
-#ROOT_DIR = '/home/saflex/projecto_cleansea/Mask_RCNN/Mask_RCNN-master'
 assert os.path.exists(ROOT_DIR), 'ROOT_DIR does not exist'
 
 # Import mrcnn libraries
@@ -29,8 +33,6 @@ import mrcnn.model as modellib
 from mrcnn import visualize
 from mrcnn.model import log
 
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
 # Directorio perteneciente a MASK-RCNN
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 
@@ -40,7 +42,6 @@ COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
 # Descargamos los Pesos Entrenados de COCO
 if not os.path.exists(COCO_WEIGHTS_PATH):
     utils.download_trained_weights(COCO_WEIGHTS_PATH)
-
 
 ############################################################
 #  Configuracion
@@ -57,6 +58,9 @@ class CleanSeaConfig(Config):
     # We use a GPU with 12GB memory, which can fit two images.
     # Adjust down if you use a smaller GPU.
     IMAGES_PER_GPU = 1
+    GPU_COUNT = 1
+
+    STEPS_PER_EPOCH = 1000
 
     # Use small images for faster training. Set the limits of the small side
     # the large side, and that determines the image shape.
@@ -70,8 +74,7 @@ class CleanSeaConfig(Config):
     DETECTION_MIN_CONFIDENCE = 0.5
 
     #Learning Rate Modificado
-    LEARNING_RATE = 0.001
-    
+    LEARNING_RATE = 0.005
 
 config= CleanSeaConfig()
 config.display()
@@ -205,20 +208,11 @@ print("Dataset Inicializado Correctamente\n")
 dataset_test.prepare()
 print("Preparacion del Dataset Completada\n")
 
-# Load and display random samples
-print("Mostrando Imagenes aleatorias...\n")
-
-image_ids = np.random.choice(dataset_train.image_ids, 4)
-for image_id in image_ids:
-    image = dataset_train.load_image(image_id)
-    mask, class_ids = dataset_train.load_mask(image_id)
-    visualize.display_top_masks(image, mask, class_ids, dataset_train.class_names)
-
 print("Inicializing model for training...\n")
 model=modellib.MaskRCNN(mode="training", config=config, model_dir=MODEL_DIR)
 # Which weights to start with?
 
-init_with = "coco"  # imagenet, coco, or last
+init_with = "last"  # imagenet, coco, or last
 if init_with == "imagenet":
     model.load_weights(model.get_imagenet_weights(), by_name=True)
 elif init_with == "coco":
@@ -232,8 +226,8 @@ elif init_with == "last":
     # Load the last model you trained and continue training
     model.load_weights(model.find_last(), by_name=True)
 
-last_path="D:/Cleansea/Mask_RCNN-cleansea/logs/mask_rcnn_debris_weights1000DA5Heads.h5"
-model.load_weights(last_path, by_name=True)
+#last_path="D:/Cleansea/Mask_RCNN-cleansea/logs/mask_rcnn_debris_weights1000DA5Heads.h5"
+#model.load_weights(last_path, by_name=True)
 
 
 ############################################################
@@ -267,12 +261,6 @@ seq = iaa.Sequential([
     )
 ], random_order=True) # apply augmenters in random order
 
-"""
-seq = iaa.Sequential([
-    iaa.Fliplr(0.5), # horizontal flips
-])
-"""
-
 # ===============================================================================
 
 # Train the head branches
@@ -280,17 +268,17 @@ seq = iaa.Sequential([
 # layers. You can also pass a regular expression to select
 # which layers to train by name pattern.
 
-print("Entrenando Heads...\n")
-model.train(dataset_train, dataset_test, learning_rate=config.LEARNING_RATE, epochs=5, layers='heads',augmentation=seq)
+#print("Entrenando Heads...\n")
+#model.train(dataset_train, dataset_test, learning_rate=config.LEARNING_RATE, epochs=5, layers='heads',augmentation=seq)
 
 # Fine tune all layers
 # Passing layers="all" trains all layers. You can also 
 # pass a regular expression to select which layers to
 # train by name pattern.
-print("Entrenando extensivamente...\n")
+print("\nEntrenando extensivamente...\n")
 model.train(dataset_train, dataset_test, 
-            learning_rate=config.LEARNING_RATE / 10,
-            epochs=1000, 
+            learning_rate=config.LEARNING_RATE,
+            epochs=100, 
             layers="all",augmentation=seq)
 
 # Save weights
