@@ -331,8 +331,7 @@ class ProposalLayer(KL.Layer):
             padding = tf.maximum(self.proposal_count - tf.shape(input=proposals)[0], 0)
             proposals = tf.pad(tensor=proposals, paddings=[(0, padding), (0, 0)])
             return proposals
-        proposals = utils.batch_slice([boxes, scores], nms,
-                                      self.config.IMAGES_PER_GPU)
+        proposals = utils.batch_slice([boxes, scores], nms, self.config.IMAGES_PER_GPU)
 
         if not context.executing_eagerly():
             # Infer the static output shape:
@@ -1678,8 +1677,7 @@ class DataGenerator(KU.Sequence):
             and masks.
         """
 
-    def __init__(self, dataset, config, shuffle=True, augmentation=None,
-                 random_rois=0, detection_targets=False):
+    def __init__(self, dataset, config, shuffle=True, augmentation=None, random_rois=0, detection_targets=False):
 
         self.image_ids = np.copy(dataset.image_ids)
         self.dataset = dataset
@@ -2320,20 +2318,22 @@ class MaskRCNN(object):
             layers = layer_regex[layers]
 
         # Data generators
-        train_generator = DataGenerator(train_dataset, self.config, shuffle=True,
-                                         augmentation=augmentation)
+        # print("LEN: ", len(train_dataset.image_info))
+        train_generator = DataGenerator(train_dataset, self.config, shuffle=True, augmentation=augmentation)
         val_generator = DataGenerator(val_dataset, self.config, shuffle=True)
 
+        # print(type(train_generator))
+        # print(train_generator.batch_size)
+        # print(train_generator.__len__())
+        # print(len(train_generator.image_ids))
         # Create log_dir if it does not exist
-        #if not os.path.exists(self.log_dir):
-        #    os.makedirs(self.log_dir)
+        # if not os.path.exists(self.log_dir):
+        #     os.makedirs(self.log_dir)
 
         # Callbacks
         callbacks = [
-            #keras.callbacks.TensorBoard(log_dir=self.log_dir,
-            #                            histogram_freq=0, write_graph=True, write_images=False),
-            #keras.callbacks.ModelCheckpoint(self.checkpoint_path,
-            #                                verbose=0, save_weights_only=True),
+            # keras.callbacks.TensorBoard(log_dir=self.log_dir, histogram_freq=0, write_graph=True, write_images=False),
+            # keras.callbacks.ModelCheckpoint(self.checkpoint_path, verbose=0, save_weights_only = True),
         ]
 
         # Add custom callbacks to the list

@@ -15,7 +15,7 @@ import tensorflow as tf
 import imgaug
 
 #Cambiamos el Directorio al propio de MASK_RCNN
-ROOT_DIR = "D:/Cleansea/Mask_RCNN-Cleansea"
+ROOT_DIR = '/home/saflex/projecto_cleansea/Mask_RCNN-tensorflow2.0'
 assert os.path.exists(ROOT_DIR), 'ROOT_DIR does not exist'
 
 # Import mrcnn libraries
@@ -208,7 +208,6 @@ def display_instances(image, boxes, masks, ids, names, scores):
     image = cv2.putText(image, caption, (x1, y1), cv2.FONT_HERSHEY_COMPLEX, 0.7, color, 2)
   return image
 
-'''
 # Cargamos el archivo json
 dataset_dir = "/home/saflex/projecto_cleansea/coco/train_coco_ok"
 annotation_json = os.path.join(dataset_dir,"annotations.json")
@@ -229,13 +228,12 @@ for category in coco_json['categories']:
         class_names.append(class_name)
 print("Nombres Añadidos \n")
 print(class_names)
-'''
 
 #Mask R-CNN
 MODEL_DIR = os.path.join(ROOT_DIR, 'logs')
 
-VIDEO_FILE = r"D:\Cleansea\cleansea_dataset\Videos\KMROV0099HDDF1088.mp4"
-VIDEO_SAVE_DIR = os.path.join('D:/Cleansea/cleansea_dataset/Videos/', 'savedimgs')
+VIDEO_FILE = "/home/saflex/projecto_cleansea/debrisVideo.mp4"
+VIDEO_SAVE_DIR = os.path.join('/media/saflex/TOSHIBA EXT/TFG/video_detection', 'savedimgs')
 COCO_MODEL_PATH = os.path.join(MODEL_DIR, 'mask_rcnn_debris_weights1000DA+.h5')
 if not os.path.exists(COCO_MODEL_PATH):
   utils.download_trained_weights(COCO_MODEL_PATH)

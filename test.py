@@ -25,7 +25,7 @@ from sklearn import svm, datasets
 from sklearn.model_selection import train_test_split
 
 #Cambiamos el Directorio al propio de MASK_RCNN
-ROOT_DIR = 'D:/Cleansea/Mask_RCNN-cleansea'
+ROOT_DIR = './'
 #ROOT_DIR = '/home/saflex/Projecto_CleanSea/Mask_RCNN/Mask_RCNN-master'
 assert os.path.exists(ROOT_DIR), 'ROOT_DIR does not exist'
 
@@ -37,12 +37,13 @@ import mrcnn.model as modellib
 from mrcnn import visualize
 from mrcnn.model import log
 
-#physical_devices = tf.config.list_physical_devices('GPU')
-#tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
+physical_devices = tf.config.list_physical_devices('GPU')
+# tf.config.experimental.set_memory_growth(physical_devices[0], True)
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 ############################################################
 #  Configuracion
 ############################################################
+
 class CleanSeaConfig(Config):
     """
     Configuracion para el entrenamiento con CleanSea Dataset.
@@ -66,6 +67,7 @@ class CleanSeaConfig(Config):
     # Salta las detecciones con <50% de seguridad
     DETECTION_MIN_CONFIDENCE = 0.5
     
+
 config= CleanSeaConfig()
 config.display()
 
@@ -226,7 +228,8 @@ model = modellib.MaskRCNN(mode="inference",
 
 # Get path to saved weights
 # Either set a specific path or find last trained weights
-model_path = os.path.join(MODEL_DIR,"debris20220705T2024","mask_rcnn_debris_0100.h5")
+# model_path = os.path.join(MODEL_DIR, "mask_rcnn_debris_weights1000DA5Heads.h5")
+model_path = os.path.join(MODEL_DIR, "debris20220706T2113/mask_rcnn_debris_0104.h5")
 #model_path = model.find_last()
 
 # Load trained weights
@@ -236,7 +239,7 @@ model.load_weights(model_path, by_name=True)
 # Training dataset.
 dataset_train = CleanSeaDataset()
 print("Configuracion para dataset_train cargada\n")
-dataset_train.load_data("D:/Cleansea/cleansea_dataset/CocoFormatDataset","train_coco")
+dataset_train.load_data("./CocoFormatDataset","train_coco")
 print("Dataset Inicializado Correctamente\n")
 dataset_train.prepare()
 print("Preparacion del Dataset Completada\n")
@@ -244,13 +247,14 @@ print("Preparacion del Dataset Completada\n")
 # Validation dataset
 dataset_test = CleanSeaDataset()
 print("Configuracion para dataset_test cargada\n")
-dataset_test.load_data("D:/Cleansea/cleansea_dataset/CocoFormatDataset", "test_coco")
+dataset_test.load_data("./CocoFormatDataset", "test_coco")
 print("Dataset Inicializado Correctamente\n")
 dataset_test.prepare()
 print("Preparacion del Dataset Completada\n")
 
 #Configuramos el path para los archivos .json
-JSON_PATH = "D:/Cleansea/cleansea_dataset/Dataset/test/json"
+JSON_PATH = "./Dataset/test/json"
+
 
 #Realizamos una lectura de todos los json y extraemos el toppic 'labels' para almacenarla en una variable con todos los labels de todas las imagenes.
 nlabels=[]
@@ -281,7 +285,7 @@ img_names=np.array(img_names)
 #  Deteccion Deseada vs Obtenida
 ############################################################
 # Test on a random training image
-image_id = random.choice(dataset_test.image_ids)
+image_id = 138
 print(f"Image {image_id} to process...")
 original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
     modellib.load_image_gt(dataset_test, inference_config, 
@@ -302,7 +306,6 @@ r = results[0]
 visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'], 
                             dataset_test.class_names, r['scores'], ax=get_ax(),figsize=(8,8))
 plt.show()
-
 ############################################################
 #  Curva de Precision-Recall
 ############################################################
@@ -312,7 +315,6 @@ AP, precisions, recalls, overlaps = utils.compute_ap(gt_bbox, gt_class_id, gt_ma
                                           r['rois'], r['class_ids'], r['scores'], r['masks'])
 visualize.plot_precision_recall(AP, precisions, recalls)
 plt.show()
-
 ############################################################
 #  Precision del Modelo
 ############################################################

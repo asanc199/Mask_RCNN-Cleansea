@@ -1,5 +1,5 @@
 __ignore__
-_background_
+background
 Can
 Squared_Can
 Wood
