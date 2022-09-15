@@ -8,6 +8,7 @@ test/
 data_augmented/
 *.avi
 output/
+*.pyc
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
