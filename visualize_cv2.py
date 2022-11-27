@@ -28,8 +28,8 @@ assert os.path.exists(ROOT_DIR), 'ROOT_DIR does not exist'
 # Directorio perteneciente a MASK-RCNN
 MODEL_DIR = os.path.join(ROOT_DIR, "logs")
 
-#COCO_MODEL_PATH = os.path.join(MODEL_DIR, 'mask_rcnn_debris_weights1000DA5Heads.h5')
-COCO_MODEL_PATH = os.path.join(MODEL_DIR, 'Mask_RCNN_Epoch-1000_Aug-severe_Size-50_Train-real_Fill-synth.h5')
+COCO_MODEL_PATH = os.path.join(MODEL_DIR, 'mask_rcnn_debris_weights1000DA5Heads.h5')
+
 # Import mrcnn libraries
 sys.path.append(ROOT_DIR)
 from mrcnn.config import Config
@@ -89,11 +89,11 @@ class InferenceConfig(CleanSeaConfig):
     IMAGES_PER_GPU = 1
     USE_MINI_MASK = False
 
-inference_config = InferenceConfig()
-inference_config.display()
+config = InferenceConfig()
+config.display()
 
 model = modellib.MaskRCNN(
-    mode="inference", model_dir=MODEL_DIR, config=inference_config
+    mode="inference", model_dir=MODEL_DIR, config=config
 )
 
 model.load_weights(COCO_MODEL_PATH, by_name=True)
@@ -104,10 +104,12 @@ def random_colors(N):
     colors = [tuple(255 * np.random.rand(3)) for _ in range(N)]
     return colors
 
+
 colors = random_colors(len(class_names))
 class_dict = {
     name: color for name, color in zip(class_names, colors)
 }
+
 
 def apply_mask(image, mask, color, alpha=0.5):
     """apply mask to image"""
@@ -118,6 +120,7 @@ def apply_mask(image, mask, color, alpha=0.5):
             image[:, :, n]
         )
     return image
+
 
 def display_instances(image, boxes, masks, ids, names, scores):
     """
@@ -150,6 +153,10 @@ def display_instances(image, boxes, masks, ids, names, scores):
     return image
 
 if __name__ == '__main__':
+    """
+        test everything
+    """
+
     capture = cv2.VideoCapture(0)
 
     # these 2 lines can be removed if you dont have a 1080p camera.

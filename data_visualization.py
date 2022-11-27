@@ -25,6 +25,10 @@ def main():
     data_augment()
 
 def data_augment():
+    """
+    Applies data augmentation to the images defined in the ``IMG_DATASET`` variable. 
+    It also generates newly images with the original image and the augmented image side by side
+    """
     if not os.path.exists(AUG_PATH):
         os.mkdir(AUG_PATH)
     for img_p in tqdm(os.listdir(IMG_DATASET)):
@@ -47,6 +51,18 @@ def data_augment():
                     times+=1
 
 def load_image_label(img_p,labels_path= LABELS_DATASET):
+    """
+    Loads image and the label linked to it. The image must be in them ``images`` folder and the respective label must be in the ``labels`` folder.
+
+    Parameters
+    ----------
+    img_p: Mat
+        Path to image
+
+    labels_path: string
+        Path to the labels folder
+
+    """
     imgs_path = labels_path.replace("labels","images")
     ann_path = img_p.replace(".jpg",".json")
     annotation = os.path.join(labels_path, ann_path)
@@ -74,6 +90,13 @@ def load_mask(label, shape_mask):
     return shape_mask
 
 def load_json(json_path):
+    """Load JSON
+
+    Parameters
+    ----------
+    json_path: string
+        Path of the json file
+    """
     # load label file
     with open(json_path) as f:
         label = f.read()
@@ -81,7 +104,9 @@ def load_json(json_path):
     return json.loads(label)
 
 def obtain_augmenter(shape, mask):
-    
+    """
+    Gets an augmenter
+    """
     seq = iaa.Sequential([
         iaa.Fliplr(0.5), # horizontal flips
         # Small gaussian blur with random sigma between 0 and 0.5.
@@ -114,6 +139,21 @@ def obtain_augmenter(shape, mask):
     return seq
     
 def draw_result(image, segmap, image_aug,segmap_aug):
+    """
+    Draws results for the performed augmentation.
+    
+    Parameters
+    ----------
+    image: Mat
+        Original image
+    segmap: SegmentationMapsOnImage
+        Segmentation map
+    image_aug: Mat
+        Augmented image
+    segmap_aug: SegmentationMapsOnImage
+        Auxiliar segmentation map
+    
+    """
     cells = []
     cells.append(image)                # column 1
     #cells.append(image_aug)                                     # column 2
