@@ -149,6 +149,17 @@ def patch_json(name,json_path,angle,x,y,rs,patch,new_img,path_to_new_img):
 def pastePNG(bg, patch, pos = [0,0]):
     """
     Pastes a png image in a specific point of a background image
+
+    Parameters
+    -----------
+    bg: numpy array
+        Background image
+    
+    patch: numpy array
+        Object image used as patch
+
+    pos: array of ints
+        Array that represents XY pixel coordinates where to paste the patch
     """
     hp, wp, cp = patch.shape
     hb, wb, cb = bg.shape
@@ -176,7 +187,22 @@ def pastePNG(bg, patch, pos = [0,0]):
 def pasteBinPNG(bg, patch, idx_obj, pos = [0,0]):
     """
     Pastes binary png image on top of bg image
+
+    Parameters
+    -----------
+    bg: numpy array
+        Binary background image
+    
+    patch: numpy array
+        Object image used as patch
+
+    idx_obj: int
+        Identifier for patch iteration (number of objects pasted)
+    
+    pos: array of ints
+        Array that represents XY pixel coordinates where to paste the patch
     """
+
     # Dimensions of the background and patch to be inserted:
     hp, wp, dp = patch.shape
     hb, wb, db = bg.shape
@@ -215,6 +241,21 @@ def pasteBinPNG(bg, patch, idx_obj, pos = [0,0]):
 def patch_img(bg_bin, background, patch, idx_obj):
     """
     Creates a synthetic image using a background image an a object image as a patch
+
+    Parameters
+    -----------
+
+    bg_bin: numpy array
+        Blank image used as background template
+
+    background: numpy array
+        Image used as background
+
+    patch: numpy array
+        Image of object used as a patch
+    
+    idx_obj: int
+        Identifier for the actual pasting iteration
     """
 
     paste = False
@@ -311,6 +352,14 @@ def obj_selector(bg_dataset,objects_dataset):
 def create_new_dataset(bg_dataset, objects_dataset):
     """
     Creates a synthetic dataset using background images and previously labeled objects
+
+    Parameters
+    -----------
+    bg_dataset: String
+        Gets the path to the background images.
+
+    objects_dataset: String
+        Gets the path to the objects that are going to be used to generate the new dataset.
     """
     bgs,bg_objs = obj_selector(bg_dataset, objects_dataset)
 
@@ -339,7 +388,12 @@ def create_new_dataset(bg_dataset, objects_dataset):
 
                 # Annotation:
                 patch_json(nimg_name, label, rotation, x, y, rs, img_obj, bg, os.path.join(AUG_PATH, "images", nimg_name))
+<<<<<<< HEAD
             
+=======
+                
+
+>>>>>>> 12a876e99a85fc778f6d57800a402a788cb47669
 #------------------------------------------------------------------------------
 def checkOverlap(bin_img, obj_bin_bg, object_areas):
     """
@@ -448,6 +502,14 @@ def checkMasks():
 def createSyntheticDataset(mask_dataset,bg_dataset):
     """
     Creates synthetic dataset from mask and background images
+
+    Parameters
+    ----------
+    mask_dataset: String
+        Gets the path where the mask dataset is stored.
+
+    bg_dataset: String
+        Gets the path where the background images dataset is stored.
     """
     OVERLAP = 10 # int(input("Introduce percentage of overlapping allowed:\n"))
     TRY = 2 # int(input("Introduce number of attempts for pasting objects:\n"))

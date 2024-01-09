@@ -21,6 +21,7 @@ except ImportError:
     print("Please install pycocotools:\n\n    pip install pycocotools\n")
     sys.exit(1)
 
+
 def main():
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter

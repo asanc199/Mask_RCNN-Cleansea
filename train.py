@@ -59,18 +59,26 @@ def train_process(args):
     for gpu in gpus:
         tf.config.experimental.set_memory_growth(gpu, True)
 
+
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
+
     # tf.config.experimental.set_memory_growth(physical_devices[0], True)
     # Directorio perteneciente a MASK-RCNN
     ROOT_DIR = './'
     MODEL_DIR = os.path.join(ROOT_DIR, "Models")
 
     # Creating path to models:
+    # Creating path to models:
     if not os.path.exists(MODEL_DIR):
         os.makedirs(MODEL_DIR)
 
     # Path to weights file:
+    # Path to weights file:
     COCO_WEIGHTS_PATH = os.path.join(ROOT_DIR, "mask_rcnn_coco.h5")
 
+    # Downloading pre-trained COCO weights:
     # Downloading pre-trained COCO weights:
     if not os.path.exists(COCO_WEIGHTS_PATH):
         utils.download_trained_weights(COCO_WEIGHTS_PATH)
@@ -81,7 +89,18 @@ def train_process(args):
 
     """Train the model."""
     # Train partition:
+    # Train partition:
     dataset_train = CleanSeaDataset()
+    print("--- Train configuration ---")
+
+    # Selecting either real or synthetic train data:
+    if args.train_db == 'real':
+        dataset_train.load_data("./CocoFormatDataset", "train_coco", size_perc = args.size_perc, fill_size_perc = args.fill_size_perc, filling_set = args.fill_db, limit_train = args.limit_train)
+    else:
+        dataset_train.load_data("./SynthSet", "train_coco", size_perc = args.size_perc)
+    print("\t- Done loading data!")
+
+    # Preparing data:
     print("--- Train configuration ---")
 
     # Selecting either real or synthetic train data:
@@ -96,6 +115,7 @@ def train_process(args):
     print("\t- Done preparing train data!")
 
     # Test partition:
+    # Test partition:
     dataset_test = CleanSeaDataset()
     print("\n--- Test configuration ---")
     if args.test_db == 'real':
@@ -104,7 +124,15 @@ def train_process(args):
         dataset_test.load_data("./SynthSet", "test_coco")
 
     print("\t- Done loading data")
+    print("\n--- Test configuration ---")
+    if args.test_db == 'real':
+        dataset_test.load_data("./CocoFormatDataset", "test_coco")
+    else:
+        dataset_test.load_data("./SynthSet", "test_coco")
+
+    print("\t- Done loading data")
     dataset_test.prepare()
+    print("\t- Done preparing test data!")
     print("\t- Done preparing test data!")
 
     # # Load and display random samples
@@ -115,12 +143,19 @@ def train_process(args):
     #     image = dataset_train.load_image(image_id)
     #     mask, class_ids = dataset_train.load_mask(image_id)
     #     visualize.display_top_masks(image, mask, class_ids, dataset_train.class_names)
+    # image_ids = np.random.choice(dataset_train.image_ids, 4)
+    # for image_id in image_ids:
+    #     image = dataset_train.load_image(image_id)
+    #     mask, class_ids = dataset_train.load_mask(image_id)
+    #     visualize.display_top_masks(image, mask, class_ids, dataset_train.class_names)
 
     # Instantiating a model (new):
     print("Initializing train model...\n")
     model = modellib.MaskRCNN(mode = "training", config = config, model_dir = MODEL_DIR)
     print("\t - Done!")
+    print("\t - Done!")
 
+    # Init weights:
     # Init weights:
     if args.pretrain == "imagenet":
         model.load_weights(model.get_imagenet_weights(), by_name=True)
@@ -129,6 +164,7 @@ def train_process(args):
         # Load weights trained on MS COCO, but skip layers that  are different due to the different number of classes See README for instructions to download the COCO weights
         model.load_weights(COCO_WEIGHTS_PATH, by_name=True, exclude=["mrcnn_class_logits", "mrcnn_bbox_fc", "mrcnn_bbox", "mrcnn_mask"])
 
+    # Selecting Data Augmentation type.
     # Selecting Data Augmentation type.
     seq = None
     if args.augmentation == 'mild':
@@ -144,6 +180,10 @@ def train_process(args):
     model.train(train_dataset = dataset_train, val_dataset = dataset_test, learning_rate = config.LEARNING_RATE,\
         epochs = 5, layers = 'heads', augmentation = seq, validation_bool = args.val_bool)
     print("\t - Done!")
+    print("Training Heads (first stage)...")
+    model.train(train_dataset = dataset_train, val_dataset = dataset_test, learning_rate = config.LEARNING_RATE,\
+        epochs = 5, layers = 'heads', augmentation = seq, validation_bool = args.val_bool)
+    print("\t - Done!")
 
     # Fine tune all layers
     # Passing layers="all" trains all layers. You can also 
@@ -153,12 +193,18 @@ def train_process(args):
         print("Training network (second stage)...")
         model.train(train_dataset = dataset_train, val_dataset = dataset_test, learning_rate = config.LEARNING_RATE / 10,\
             epochs = epoch_break_point, layers = "all", augmentation = seq, validation_bool = args.val_bool)
+        print("Training network (second stage)...")
+        model.train(train_dataset = dataset_train, val_dataset = dataset_test, learning_rate = config.LEARNING_RATE / 10,\
+            epochs = epoch_break_point, layers = "all", augmentation = seq, validation_bool = args.val_bool)
 
         # Output name:
         MODEL_NAME = "Mask_RCNN_Epoch-{}_Aug-{}_Size-{}_Train-{}_Fill-{}_FillSize-{}_Limit-{}.h5".format(epoch_break_point,\
             args.augmentation, args.size_perc, args.train_db, args.fill_db, args.fill_size_perc, args.limit_train)
+        MODEL_NAME = "Mask_RCNN_Epoch-{}_Aug-{}_Size-{}_Train-{}_Fill-{}_FillSize-{}_Limit-{}.h5".format(epoch_break_point,\
+            args.augmentation, args.size_perc, args.train_db, args.fill_db, args.fill_size_perc, args.limit_train)
 
         # Save weights
+        print("\t -Saving weights in {}...\n".format(os.path.join(MODEL_DIR, MODEL_NAME)))
         print("\t -Saving weights in {}...\n".format(os.path.join(MODEL_DIR, MODEL_NAME)))
         model_path = os.path.join(MODEL_DIR, MODEL_NAME)
         model.keras_model.save_weights(model_path)
@@ -196,6 +242,11 @@ def inference_process(args):
     MODEL_DIR = os.path.join(ROOT_DIR, "Models")
 
     # Creating the RCNN neural model:
+    # Recreate the model in inference mode:
+    ROOT_DIR = './'
+    MODEL_DIR = os.path.join(ROOT_DIR, "Models")
+
+    # Creating the RCNN neural model:
     model = modellib.MaskRCNN(mode = "inference", config = inference_config, model_dir = MODEL_DIR)
 
     for epoch_break_point in args.epochs:
@@ -208,9 +259,23 @@ def inference_process(args):
 
         # Load trained weights
         print("Loading weights from {}...".format(model_path))
+        print("Loading weights from {}...".format(model_path))
         model.load_weights(model_path, by_name=True)
         print("\t - Done!")
+        print("\t - Done!")
 
+        # Iterating through the different test images:
+        APs_025_instance = list()
+        APs_05_instance = list()
+        APs_075_instance = list()
+        AP_ranges_instance = list()
+        IoUs_instance = list()
+        APs_05_material = list()
+        APs_075_material = list()
+        APs_025_material = list()
+        IoUs_material = list()
+        AP_ranges_material = list()
+        for image_id in dataset_test.image_ids:
         # Iterating through the different test images:
         APs_025_instance = list()
         APs_05_instance = list()
