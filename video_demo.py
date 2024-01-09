@@ -31,7 +31,7 @@ size = (
 if not os.path.exists("detection"):
     os.makedirs("detection")
 codec = cv2.VideoWriter_fourcc(*'DIVX')
-output = cv2.VideoWriter('detection/debris_detection.avi', codec, 60.0, size)
+output = cv2.VideoWriter('detection/debris_detection_v2.avi', codec, 60.0, size)
 
 while True:
     ret, frame = stream.read()
