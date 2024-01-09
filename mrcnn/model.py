@@ -331,8 +331,7 @@ class ProposalLayer(KL.Layer):
             padding = tf.maximum(self.proposal_count - tf.shape(input=proposals)[0], 0)
             proposals = tf.pad(tensor=proposals, paddings=[(0, padding), (0, 0)])
             return proposals
-        proposals = utils.batch_slice([boxes, scores], nms,
-                                      self.config.IMAGES_PER_GPU)
+        proposals = utils.batch_slice([boxes, scores], nms, self.config.IMAGES_PER_GPU)
 
         if not context.executing_eagerly():
             # Infer the static output shape:
@@ -1678,8 +1677,7 @@ class DataGenerator(KU.Sequence):
             and masks.
         """
 
-    def __init__(self, dataset, config, shuffle=True, augmentation=None,
-                 random_rois=0, detection_targets=False):
+    def __init__(self, dataset, config, shuffle=True, augmentation=None, random_rois=0, detection_targets=False):
 
         self.image_ids = np.copy(dataset.image_ids)
         self.dataset = dataset
@@ -2138,7 +2136,7 @@ class MaskRCNN(object):
         """Downloads ImageNet trained weights from Keras.
         Returns path to weights file.
         """
-        from keras.utils.data_utils import get_file
+        from tensorflow.keras.utils import get_file
         TF_WEIGHTS_PATH_NO_TOP = 'https://github.com/fchollet/deep-learning-models/'\
                                  'releases/download/v0.2/'\
                                  'resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5'
@@ -2270,7 +2268,7 @@ class MaskRCNN(object):
             "*epoch*", "{epoch:04d}")
 
     def train(self, train_dataset, val_dataset, learning_rate, epochs, layers,
-              augmentation=None, custom_callbacks=None, no_augmentation_sources=None):
+              augmentation=None, custom_callbacks=None, no_augmentation_sources=None, validation_bool = False):
         """Train the model.
         train_dataset, val_dataset: Training and validation Dataset objects.
         learning_rate: The learning rate to train with
@@ -2320,20 +2318,22 @@ class MaskRCNN(object):
             layers = layer_regex[layers]
 
         # Data generators
-        train_generator = DataGenerator(train_dataset, self.config, shuffle=True,
-                                         augmentation=augmentation)
+        # print("LEN: ", len(train_dataset.image_info))
+        train_generator = DataGenerator(train_dataset, self.config, shuffle=True, augmentation=augmentation)
         val_generator = DataGenerator(val_dataset, self.config, shuffle=True)
 
+        # print(type(train_generator))
+        # print(train_generator.batch_size)
+        # print(train_generator.__len__())
+        # print(len(train_generator.image_ids))
         # Create log_dir if it does not exist
-        if not os.path.exists(self.log_dir):
-            os.makedirs(self.log_dir)
+        # if not os.path.exists(self.log_dir):
+        #     os.makedirs(self.log_dir)
 
         # Callbacks
         callbacks = [
-            keras.callbacks.TensorBoard(log_dir=self.log_dir,
-                                        histogram_freq=0, write_graph=True, write_images=False),
-            keras.callbacks.ModelCheckpoint(self.checkpoint_path,
-                                            verbose=0, save_weights_only=True),
+            # keras.callbacks.TensorBoard(log_dir=self.log_dir, histogram_freq=0, write_graph=True, write_images=False),
+            # keras.callbacks.ModelCheckpoint(self.checkpoint_path, verbose=0, save_weights_only = True),
         ]
 
         # Add custom callbacks to the list
@@ -2342,8 +2342,8 @@ class MaskRCNN(object):
 
         # Train
         log("\nStarting at epoch {}. LR={}\n".format(self.epoch, learning_rate))
-        log("Checkpoint Path: {}".format(self.checkpoint_path))
-        self.set_trainable(layers)
+        # log("Checkpoint Path: {}".format(self.checkpoint_path))
+        self.set_trainable(layers, verbose=0)
         self.compile(learning_rate, self.config.LEARNING_MOMENTUM)
 
         # Work-around for Windows: Keras fails on Windows when using
@@ -2354,18 +2354,34 @@ class MaskRCNN(object):
         else:
             workers = multiprocessing.cpu_count()
 
-        self.keras_model.fit(
-            train_generator,
-            initial_epoch=self.epoch,
-            epochs=epochs,
-            steps_per_epoch=self.config.STEPS_PER_EPOCH,
-            callbacks=callbacks,
-            validation_data=val_generator,
-            validation_steps=self.config.VALIDATION_STEPS,
-            max_queue_size=100,
-            workers=0,
-            use_multiprocessing=workers > 1,
-        )
+        if validation_bool == True:
+            self.keras_model.fit(
+                train_generator,
+                initial_epoch = self.epoch,
+                epochs = epochs,
+                steps_per_epoch = train_generator.__len__(), #self.config.STEPS_PER_EPOCH,
+                callbacks = callbacks,
+                validation_data = val_generator,
+                validation_steps = val_generator.__len__(), #self.config.VALIDATION_STEPS,
+                max_queue_size = 100,
+                workers = 0,
+                use_multiprocessing = workers > 1,
+                verbose = 2,
+            )
+        else:
+            self.keras_model.fit(
+                train_generator,
+                initial_epoch = self.epoch,
+                epochs = epochs,
+                steps_per_epoch = train_generator.__len__(), #self.config.STEPS_PER_EPOCH,
+                callbacks = callbacks,
+                # validation_data = val_generator,
+                # validation_steps = val_generator.__len__(), #self.config.VALIDATION_STEPS,
+                max_queue_size = 100,
+                workers = 0,
+                use_multiprocessing = workers > 1,
+                verbose = 2,
+            )
         self.epoch = max(self.epoch, epochs)
 
     def mold_inputs(self, images):

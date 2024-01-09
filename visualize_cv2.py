@@ -21,7 +21,7 @@ import itertools
 import matplotlib.pyplot as plt
 
 #Cambiamos el Directorio al propio de MASK_RCNN
-ROOT_DIR = 'D:/Cleansea/Mask_RCNN-cleansea'
+ROOT_DIR = './'
 #ROOT_DIR = '/home/saflex/Projecto_CleanSea/Mask_RCNN/Mask_RCNN-master'
 assert os.path.exists(ROOT_DIR), 'ROOT_DIR does not exist'
 

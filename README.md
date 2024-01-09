@@ -30,7 +30,7 @@ Use this bibtex to cite this repository:
 ```
 @inproceedings{asferrer2022,
       author    = {Alejandro Sanchez Ferrer, Antonio Javier Gallego, Jose Javier Valero-Mas, and Jorge Calvo-Zaragoza},
-      title     = {The CleanSea Set: A Benchmark Corpus for Underwater Debris Detection and Recognition},
+      title     = {Underwater Debris Detection using Regression Neural Networks},
       booktitle = {Iberian Conference on Pattern Recognition and Image Analysis},
       year      = {2022}
     }
@@ -49,6 +49,9 @@ Follow the `installation/README.md` file for further instructions on installing 
     You must have the Visual C++ 2015 build tools on your path (see the repo for additional details)
 
 # Example of usage
-### [Cleansea Project](https://youtu.be/nQbFYz0dRno) - Underwater Debris Detection as Bachelor's Final Project by [Alejandro Sanchez Ferrer](https://github.com/asanc199)
+### [Cleansea Project](https://youtu.be/nQbFYz0dRno) - [The CleanSea Set: A Benchmark Corpus for Underwater Debris Detection and Recognition](https://link.springer.com/chapter/10.1007/978-3-031-04881-4_49) by [Alejandro Sanchez Ferrer](https://www.linkedin.com/in/alejandro-sanchez-ferrer/), Jorge Calvo, Antonio Javier Gallego & Jose Javier Valero Mas.
+
+### [PRL Extension](https://youtu.be/milgTEuCc4c) - An Experimental Study on Marine Debris Location and Recognition using Object Detection by [Alejandro Sanchez Ferrer](https://www.linkedin.com/in/alejandro-sanchez-ferrer/), Jorge Calvo, Antonio Javier Gallego & Jose Javier Valero Mas.
+
 
 ![Projecto Cleansea](assets/project_cleansea.gif)
